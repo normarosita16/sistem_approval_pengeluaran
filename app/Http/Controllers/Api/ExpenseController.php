@@ -60,6 +60,42 @@ public function approve(ApproveExpenseRequest $request, int $id)
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 400);
     }
+},
+
+/**
+ * @OA\Get(
+ *     path="/api/expense/{id}",
+ *     tags={"Expense"},
+ *     summary="Lihat detail pengeluaran dan approval-nya",
+ *     @OA\Parameter(
+ *         name="id", in="path", required=true, @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Detail ditemukan"),
+ *     @OA\Response(response=404, description="Tidak ditemukan")
+ * )
+ */
+public function show(int $id)
+{
+    $expense = $this->expenseService->show($id);
+    return response()->json([
+        'id' => $expense->id,
+        'amount' => $expense->amount,
+        'status' => [
+            'id' => $expense->status->id,
+            'name' => $expense->status->name
+        ],
+        'approval' => $expense->approvals->map(fn ($a) => [
+            'id' => $a->id,
+            'approver' => [
+                'id' => $a->approver->id,
+                'name' => $a->approver->name
+            ],
+            'status' => [
+                'id' => $a->status->id,
+                'name' => $a->status->name
+            ]
+        ])
+    ]);
 }
 
 }

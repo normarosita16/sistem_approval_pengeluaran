@@ -75,6 +75,18 @@ public function approve(int $expenseId, int $approverId): Expense
 
         return $expense->fresh();
     });
+},
+public function show(int $id): Expense
+{
+    return Expense::with([
+        'status',
+        'approvals' => function ($q) {
+            $q->orderBy('id');
+        },
+        'approvals.approver',
+        'approvals.status'
+    ])->findOrFail($id);
 }
+
 
 }
