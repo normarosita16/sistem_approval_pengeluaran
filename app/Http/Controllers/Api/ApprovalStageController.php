@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApprovalStage\StoreApprovalStageRequest;
 use App\Services\ApprovalStageService;
+use App\Http\Requests\ApprovalStage\UpdateApprovalStageRequest;
 
 class ApprovalStageController extends Controller
 {
@@ -28,5 +29,33 @@ class ApprovalStageController extends Controller
     {
         $stage = $this->approvalStageService->store($request->validated());
         return response()->json($stage, 201);
-    }
+    },
+    
+/**
+ * @OA\Put(
+ *     path="/api/approval-stages/{id}",
+ *     tags={"Approval Stage"},
+ *     summary="Ubah tahap approval",
+ *     @OA\Parameter(
+ *         name="id", in="path", required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"approver_id"},
+ *             @OA\Property(property="approver_id", type="integer", example=2)
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Berhasil"),
+ *     @OA\Response(response=422, description="Validasi gagal"),
+ *     @OA\Response(response=404, description="Not found")
+ * )
+ */
+public function update(UpdateApprovalStageRequest $request, int $id)
+{
+    $stage = $this->approvalStageService->update($id, $request->validated());
+    return response()->json($stage);
+}
+
 }
