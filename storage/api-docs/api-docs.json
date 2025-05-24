@@ -1,0 +1,263 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Approval System API",
+        "description": "Dokumentasi REST API untuk sistem approval pengeluaran",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "Localhost API"
+        }
+    ],
+    "paths": {
+        "/api/approval-stages": {
+            "post": {
+                "tags": [
+                    "Approval Stage"
+                ],
+                "summary": "Tambah tahap approval",
+                "operationId": "9f9dd9303e6492f5099f579e6bc74094",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "approver_id"
+                                ],
+                                "properties": {
+                                    "approver_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/approval-stages/{id}": {
+            "put": {
+                "tags": [
+                    "Approval Stage"
+                ],
+                "summary": "Ubah tahap approval",
+                "operationId": "412a3fd43c2a458843dc9468e45fd1ef",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "approver_id"
+                                ],
+                                "properties": {
+                                    "approver_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/approvers": {
+            "post": {
+                "tags": [
+                    "Approver"
+                ],
+                "summary": "Tambah approver",
+                "operationId": "c96e6b9c8b1c756d29cd9a2967330a13",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Ana"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/expense": {
+            "post": {
+                "tags": [
+                    "Expense"
+                ],
+                "summary": "Tambah pengeluaran",
+                "operationId": "6004cffd6cbe2bc5ef2bdb7cb4e4cfcc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "type": "integer",
+                                        "example": 100000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Berhasil"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                }
+            }
+        },
+        "/api/expense/{id}/approve": {
+            "patch": {
+                "tags": [
+                    "Expense"
+                ],
+                "summary": "Approver menyetujui pengeluaran",
+                "operationId": "1b29efa6bb97aa7a6c57b16813336821",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "approver_id"
+                                ],
+                                "properties": {
+                                    "approver_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil"
+                    },
+                    "400": {
+                        "description": "Tahapan belum terpenuhi"
+                    },
+                    "404": {
+                        "description": "Data tidak ditemukan"
+                    }
+                }
+            }
+        },
+        "/api/expense/{id}": {
+            "get": {
+                "tags": [
+                    "Expense"
+                ],
+                "summary": "Lihat detail pengeluaran dan approval-nya",
+                "operationId": "7660626b80497ab2ccadf223d8b6aa64",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail ditemukan"
+                    },
+                    "404": {
+                        "description": "Tidak ditemukan"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Approval Stage",
+            "description": "Approval Stage"
+        },
+        {
+            "name": "Approver",
+            "description": "Approver"
+        },
+        {
+            "name": "Expense",
+            "description": "Expense"
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+<?php 
 namespace App\Services;
 
 use App\Models\Approval;
@@ -35,58 +36,60 @@ class ExpenseService
 
             return $expense;
         });
-    },
-public function approve(int $expenseId, int $approverId): Expense
-{
-    return DB::transaction(function () use ($expenseId, $approverId) {
-        $approvedStatus = Status::where('name', 'disetujui')->firstOrFail();
-        $waitingStatus = Status::where('name', 'menunggu persetujuan')->firstOrFail();
+    }
 
-        $expense = Expense::with(['approvals'])->findOrFail($expenseId);
+    public function approve(int $expenseId, int $approverId): Expense
+    {
+        return DB::transaction(function () use ($expenseId, $approverId) {
+            $approvedStatus = Status::where('name', 'disetujui')->firstOrFail();
+            $waitingStatus = Status::where('name', 'menunggu persetujuan')->firstOrFail();
 
-        $approval = $expense->approvals()
-            ->where('approver_id', $approverId)
-            ->first();
+            $expense = Expense::with(['approvals'])->findOrFail($expenseId);
 
-        if (!$approval) {
-            throw new ModelNotFoundException("Approver not assigned to this expense.");
-        }
+            $approval = $expense->approvals()
+                ->where('approver_id', $approverId)
+                ->first();
 
-        // Cek apakah semua approval sebelum ini sudah disetujui
-        $approvalStages = Approval::where('expense_id', $expenseId)
-            ->orderBy('id')
-            ->get();
-
-        foreach ($approvalStages as $stage) {
-            if ($stage->id == $approval->id) break;
-            if ($stage->status_id != $approvedStatus->id) {
-                throw new \Exception("Approval cannot proceed. Previous stage not approved.");
+            if (!$approval) {
+                throw new ModelNotFoundException("Approver not assigned to this expense.");
             }
-        }
 
-        // Setujui approval ini
-        $approval->update(['status_id' => $approvedStatus->id]);
+            // Cek apakah semua approval sebelum ini sudah disetujui
+            $approvalStages = Approval::where('expense_id', $expenseId)
+                ->orderBy('id')
+                ->get();
 
-        // Jika semua disetujui, ubah status expense
-        $allApproved = $expense->approvals()->where('status_id', $waitingStatus->id)->count() === 0;
-        if ($allApproved) {
-            $expense->update(['status_id' => $approvedStatus->id]);
-        }
+            foreach ($approvalStages as $stage) {
+                if ($stage->id == $approval->id) break;
+                if ($stage->status_id != $approvedStatus->id) {
+                    throw new \Exception("Approval cannot proceed. Previous stage not approved.");
+                }
+            }
 
-        return $expense->fresh();
-    });
-},
-public function show(int $id): Expense
-{
-    return Expense::with([
-        'status',
-        'approvals' => function ($q) {
-            $q->orderBy('id');
-        },
-        'approvals.approver',
-        'approvals.status'
-    ])->findOrFail($id);
-}
+            // Setujui approval ini
+            $approval->update(['status_id' => $approvedStatus->id]);
+
+            // Jika semua disetujui, ubah status expense
+            $allApproved = $expense->approvals()->where('status_id', $waitingStatus->id)->count() === 0;
+            if ($allApproved) {
+                $expense->update(['status_id' => $approvedStatus->id]);
+            }
+
+            return $expense->fresh();
+        });
+    }
+
+    public function show(int $id): Expense
+    {
+        return Expense::with([
+            'status',
+            'approvals' => function ($q) {
+                $q->orderBy('id');
+            },
+            'approvals.approver',
+            'approvals.status'
+        ])->findOrFail($id);
+    }
 
 
 }

@@ -1,24 +1,10 @@
+<?php 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Approver\StoreApproverRequest;
 use App\Services\ApproverService;
 
-/**
- * @OA\Info(
- *     version="1.0.0",
- *     title="Loker Approval API",
- *     description="Dokumentasi REST API untuk sistem approval pengeluaran"
- * )
- * @OA\Server(
- *     url=L5_SWAGGER_CONST_HOST,
- *     description="API Server"
- * )
- * @OA\Tag(
- *     name="Approver",
- *     description="Endpoint untuk approver"
- * )
- */
 class ApproverController extends Controller
 {
     public function __construct(private ApproverService $approverService) {}

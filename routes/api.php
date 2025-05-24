@@ -1,3 +1,5 @@
+<?php 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApproverController;
 use App\Http\Controllers\Api\ApprovalStageController;
 use App\Http\Controllers\Api\ExpenseController;
@@ -14,4 +16,3 @@ Route::post('/expense', [ExpenseController::class, 'store']);
 Route::put('/expense/{id}/approve', [ExpenseController::class, 'approve']);
 // untuk melihat detail pengeluaran dan seluruh tahapan approval-nya.
 Route::get('/expense/{id}', [ExpenseController::class, 'show']);
-

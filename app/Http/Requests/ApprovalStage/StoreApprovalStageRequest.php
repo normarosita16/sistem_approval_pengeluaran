@@ -1,3 +1,4 @@
+<?php 
 namespace App\Http\Requests\ApprovalStage;
 
 use Illuminate\Foundation\Http\FormRequest;

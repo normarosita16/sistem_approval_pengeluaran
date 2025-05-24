@@ -1,3 +1,4 @@
+<?php 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -30,7 +31,7 @@ class ExpenseController extends Controller
     {
         $expense = $this->expenseService->store($request->validated());
         return response()->json($expense, 201);
-    },
+    }
 
 /**
  * @OA\Patch(
@@ -60,7 +61,7 @@ public function approve(ApproveExpenseRequest $request, int $id)
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 400);
     }
-},
+}
 
 /**
  * @OA\Get(
